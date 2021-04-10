@@ -364,6 +364,51 @@ For more examples:
 
 https://github.com/cph-pk/Fullstack-startcode/blob/day4/test/friendEndpointsTest.ts
 
+## **Explain**, using a relevant example, a full JavaScript backend including relevant test cases to test the REST-API (not on the production database)
+
+**Answer:**
+
+Sudo code: user request -> start hit in code -> follow request around in code -> show how we test this flow of a request in the code
+A request can be tested with the program postman
+(request example: api/friends/pp@b.dk)
+
+Application starts in bin/www.ts where we start the server and a connection to our database and set the value on a key/value pair via the global variable app ->
+
+App.ts  (remember to talk about all the imports, especially import dotenv from "dotenv"; dotenv.config(); that loads our environment variables and error handling (all the middleware we use)) -> 
+
+friendRoutesAuth.ts (talk about authorization and authentication) ->
+
+friendFacade.ts (query mongodb with const friend: IFriend = await this.friendCollection.findOne({ email: friendEmail });, talk about Interface, Joi validating, if time refer to the validation method in the bottom where bcrypt is used) -> 
+
+back to friendRoutesAuth.ts where we make a DTO to show the relevant data to a user.
+
+**Test case:**
+
+Look in test/friendEndpointTests.ts and go to the test case shown in the question above 
+
+```javascript
+describe("While verifying the get any user, given a userId (email)", function () {
+    it("It should allow an admin user to find Donald Duck", async () => {
+      const response = await request
+        .get('/api/friends/find-user/dd@b.dk')
+        .auth("aa@a.dk", "secret")
+      expect(response.status).to.equal(200)
+      expect(response.body.firstName).to.equal("Donald")
+    })
+```
+
+If time, talk about the two other tests about being authenticated and authorized before being able to search on other users.
+
+In test/friendFacadeTest.ts we test the getFriend method from our facade:
+```javascript
+it("It should find Pop Corn", async () => {
+            const findFriend = await friendCollection.findOne({ email: "pc@b.dk" })
+            expect(findFriend.lastName).to.be.equal("Corn")
+        })
+```
+If you have time to the exam talk about the @test belove (It should not find xxx.@.b.dk) and you could also talk about the tests in "Verify the getVerifiedUser method" to talk about verification.
+
+
 
 <br>
 <br>
